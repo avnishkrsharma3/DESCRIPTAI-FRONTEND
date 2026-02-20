@@ -4,10 +4,22 @@
   <!-- Filters Section -->
 
   <div class="filters">
+    <!-- Search Input -->
+    <div class="search-box">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search products..."
+        [(ngModel)]="searchQuery"
+        (keyup.enter)="onSearch()"
+      />
+      <button class="btn btn-primary" (click)="onSearch()">Search</button>
+    </div>
+
     <!-- Category Filter -->
     <div class="filter-group">
       <label for="category-filter">Category</label>
-      <select id="category-filter" [(ngModel)]="selectedCategory" (change)="filterProducts()">
+      <select id="category-filter" [(ngModel)]="selectedCategory" (change)="applyFilters()">
         <option value="all">All Categories</option>
         <option *ngFor="let category of categories" [value]="category">
           {{ category }}

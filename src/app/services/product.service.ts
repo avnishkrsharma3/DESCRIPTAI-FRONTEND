@@ -15,5 +15,10 @@ export class ProductService {
   getAllProducts(limit: number = 100): Observable<ProductsResponse> {
     return this.http.get<ProductsResponse>(`${this.apiUrl}?limit=${limit}`);
   }
+
+  // Search for products
+  searchProducts(query: string): Observable<ProductsResponse> {
+    return this.http.get<ProductsResponse>(`${this.apiUrl}/search?q=${query}`);
+  }
  
 }
