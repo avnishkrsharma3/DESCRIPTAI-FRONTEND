@@ -20,21 +20,20 @@ export class ProductListComponent implements OnInit {
   selectedCategory: string = 'all';
   loading: boolean = false;
 
-  constructor(private productService: ProductService
-    , private cdr: ChangeDetectorRef
-  ) {}
+  constructor(private productService: ProductService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.loadProducts();
   }
 
   loadProducts(): void {
-  this.loading = true;
+    this.loading = true;
     this.productService.getAllProducts().subscribe({
       next: (response) => {
         this.products = response.products;
         this.filteredProducts = response.products;
         this.categories = [...new Set(this.products.map(p => p.category))];
+        this.applyFilters();
         this.loading = false;
         this.cdr.detectChanges();
       },
@@ -45,7 +44,28 @@ export class ProductListComponent implements OnInit {
     });
   }
 
-  filterProducts(): void {
+  onSearch(): void {
+    if (this.searchQuery.trim() === '') {
+      this.loadProducts();
+      return;
+    }
+
+    this.loading = true;
+    this.productService.searchProducts(this.searchQuery).subscribe({
+      next: (response) => {
+        this.products = response.products;
+        this.applyFilters();
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error searching products:', error);
+        this.loading = false;
+      }
+    });
+  }
+
+  applyFilters(): void {
     let tempProducts = this.products;
 
     if (this.selectedCategory !== 'all') {
@@ -54,12 +74,10 @@ export class ProductListComponent implements OnInit {
 
     this.filteredProducts = tempProducts;
   }
-  
-
 
   clearFilters(): void {
     this.searchQuery = '';
     this.selectedCategory = 'all';
-    this.filterProducts();
+    this.loadProducts();
   }
 }
