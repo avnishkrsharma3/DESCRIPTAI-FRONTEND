@@ -2,7 +2,6 @@
   <h1>Product Catalog</h1>
 
   <!-- Filters Section -->
-
   <div class="filters">
     <!-- Search Input -->
     <div class="search-box">
@@ -28,24 +27,33 @@
     </div>
 
     <!-- Clear Filters -->
-    <button class="clear-button" (click)="clearFilters()">Clear Filters</button>
+    <button class="btn clear-button" (click)="clearFilters()">Clear Filters</button>
   </div>
 
 
   <!-- Loading Spinner -->
   <div *ngIf="loading" class="loading">
-    <div class="spinner"></div>
+    <div class="spinner">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
     <p>Loading products...</p>
   </div>
 
   <!-- Products Grid -->
-  <div *ngIf="!loading" class="products-grid">
+  <div *ngIf="!loading && filteredProducts.length > 0" class="products-grid">
     <div *ngFor="let product of filteredProducts" class="product-card">
-      <img [src]="product.thumbnail" [alt]="product.title" class="product-image" />
+      <div class="product-image-container">
+        <img [src]="product.thumbnail" [alt]="product.title" class="product-image" />
+      </div>
       <div class="product-info">
         <h3>{{ product.title }}</h3>
-        <p class="brand">{{ product.brand }}</p>
-        <p class="category">{{ product.category }}</p>
+        <div class="brand-category">
+          <span class="brand">{{ product.brand }}</span>
+          <span>|</span>
+          <span class="category">{{ product.category }}</span>
+        </div>
         <p class="description">{{ product.description }}</p>
         <div class="product-footer">
           <span class="price">${{ product.price }}</span>
@@ -57,5 +65,8 @@
 
   <!-- Empty State -->
   <div *ngIf="!loading && filteredProducts.length === 0" class="empty-state">
-    <p>No products found. Try adjusting your filters.</p>
+    <div class="empty-state-icon">😕</div>
+    <p>No products found matching your criteria.</p>
+    <span>Try adjusting your filters or search terms.</span>
   </div>
+</div>
