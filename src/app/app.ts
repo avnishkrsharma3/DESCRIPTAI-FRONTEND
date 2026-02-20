@@ -6,7 +6,7 @@ import { ProductListComponent } from './components/product-list.component/produc
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, ProductListComponent],
-  template: `<h1>Hello, {{title}}</h1><app-product-list></app-product-list><router-outlet></router-outlet>`,
+  template: `<app-product-list></app-product-list><router-outlet></router-outlet>`,
   styles: []
 })
 export class App {
