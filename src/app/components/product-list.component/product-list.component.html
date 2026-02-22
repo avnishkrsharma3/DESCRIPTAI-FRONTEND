@@ -30,13 +30,25 @@
     <button class="btn clear-button" (click)="clearFilters()">Clear Filters</button>
   </div>
 
-  <div *ngIf="selectedProducts.length > 0" class="selected-count">
-    {{ selectedProducts.length }} product(s) selected
+
+  <!-- Selection Toolbar -->
+  <div class="selection-toolbar" [class.show]="selectedProducts.length > 0">
+    <div class="selected-count">
+      {{ selectedProducts.length }} product(s) selected
+    </div>
+    <div class="actions">
+        <button class="btn btn-primary" (click)="toggleSelectAll()" >
+            Select All
+        </button>
+        <button class="btn btn-primary" (click)="generateDescriptions()" [disabled]="selectedProducts.length === 0">
+            Generate Descriptions
+        </button>
+        <button class="btn clear-button" (click)="clearSelection()">
+          Clear Selection
+        </button>
+    </div>
   </div>
-  <div class="select-all-container">
-    <input type="checkbox" id="selectAllCheckbox" [checked]="isAllSelected()" (change)="toggleSelectAll()">
-    <label for="selectAllCheckbox">Select All</label>
-  </div>
+
 
 
   <!-- Loading Spinner -->
