@@ -19,11 +19,40 @@ export class ProductListComponent implements OnInit {
   searchQuery: string = '';
   selectedCategory: string = 'all';
   loading: boolean = false;
+  isChecked: boolean = true;
+  public selectedProducts: Product[] = [];
 
   constructor(private productService: ProductService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.loadProducts();
+  }
+
+  toggleSelection(product: Product): void {
+    if (this.isSelected(product)) {
+      this.selectedProducts = this.selectedProducts.filter(p => p.id !== product.id);
+    } else {
+      this.selectedProducts.push(product);
+    }
+  }
+
+  isSelected(product: Product): boolean {
+    return this.selectedProducts.some(p => p.id === product.id); 
+  }
+
+  isAllSelected(): boolean {
+    if (this.filteredProducts.length === 0) {
+      return false;
+    }
+    return this.selectedProducts.length === this.filteredProducts.length;
+  }
+
+  toggleSelectAll(): void {
+    if (this.isAllSelected()) {
+      this.selectedProducts = [];
+    } else {
+      this.selectedProducts = [...this.filteredProducts];
+    }
   }
 
   loadProducts(): void {

@@ -30,6 +30,14 @@
     <button class="btn clear-button" (click)="clearFilters()">Clear Filters</button>
   </div>
 
+  <div *ngIf="selectedProducts.length > 0" class="selected-count">
+    {{ selectedProducts.length }} product(s) selected
+  </div>
+  <div class="select-all-container">
+    <input type="checkbox" id="selectAllCheckbox" [checked]="isAllSelected()" (change)="toggleSelectAll()">
+    <label for="selectAllCheckbox">Select All</label>
+  </div>
+
 
   <!-- Loading Spinner -->
   <div *ngIf="loading" class="loading">
@@ -43,7 +51,7 @@
 
   <!-- Products Grid -->
   <div *ngIf="!loading && filteredProducts.length > 0" class="products-grid">
-    <div *ngFor="let product of filteredProducts" class="product-card">
+    <div *ngFor="let product of filteredProducts" class="product-card" [class.selected]="isSelected(product)" (click)="toggleSelection(product)">
       <div class="product-image-container">
         <img [src]="product.thumbnail" [alt]="product.title" class="product-image" />
       </div>
@@ -59,6 +67,17 @@
           <span class="price">${{ product.price }}</span>
           <span class="rating" *ngIf="product.rating">⭐ {{ product.rating }}</span>
         </div>
+      </div>
+      <div class="selection-overlay">
+        <input
+          type="checkbox"
+          class="product-checkbox"
+          [id]="'checkbox-' + product.id"
+          [checked]="isSelected(product)"
+          (change)="toggleSelection(product)"
+          (click)="$event.stopPropagation()"
+        />
+        <label [for]="'checkbox-' + product.id" class="product-checkbox-label">Selected</label>
       </div>
     </div>
   </div>
