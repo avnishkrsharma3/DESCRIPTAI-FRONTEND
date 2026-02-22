@@ -109,4 +109,13 @@ export class ProductListComponent implements OnInit {
     this.selectedCategory = 'all';
     this.loadProducts();
   }
+
+  generateDescriptions(): void {
+    console.log('Generating descriptions for:', this.selectedProducts);
+    // Future implementation: call a service to generate descriptions
+  }
+
+  clearSelection(): void {
+    this.selectedProducts = [];
+  }
 }
