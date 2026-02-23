@@ -1,198 +1,211 @@
-.login-container {
+/* =========================
+   GLOBAL RESET (IMPORTANT)
+========================= */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* =========================
+   PAGE LAYOUT
+========================= */
+.page-wrapper {
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    padding: 1rem;
+    background: #f4f7fb;
+    padding: 20px;
 }
 
+/* =========================
+   CARD
+========================= */
 .login-card {
-    background: white;
-    padding: 3rem;
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
     width: 100%;
     max-width: 420px;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
 }
 
+/* =========================
+   HEADER
+========================= */
 .login-card h1 {
-    color: #212529;
-    margin-bottom: 0.5rem;
-    text-align: center;
-    font-size: 2rem;
+    font-size: 26px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 6px;
 }
 
-.login-card>p {
-    color: #868e96;
-    text-align: center;
-    margin-bottom: 2rem;
-    font-size: 1rem;
+.subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 30px;
 }
 
+/* =========================
+   FORM GROUP
+========================= */
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 20px;
 }
 
 .form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
+    font-size: 13px;
     font-weight: 600;
-    color: #495057;
-    font-size: 0.9rem;
+    color: #374151;
+    margin-bottom: 6px;
+    display: block;
 }
 
+/* =========================
+   INPUT BASE STYLE
+========================= */
 .form-group input[type="text"],
-.form-group input[type="password"] {
+.form-group input[type="password"],
+.form-group input[type="email"] {
     width: 100%;
-    padding: 0.75rem;
-    border: 2px solid #dee2e6;
+    height: 44px;
+    padding: 0 14px;
     border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    box-sizing: border-box;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+    background: #f9fafb;
+    transition: all 0.2s ease;
 }
 
+/* Focus */
 .form-group input:focus {
     outline: none;
-    border-color: #4c6ef5;
-    box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.2);
+    border-color: #6366f1;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 }
 
-.form-group input.invalid {
-    border-color: #e03131;
-}
-
-.form-group input.invalid:focus {
-    box-shadow: 0 0 0 3px rgba(224, 49, 49, 0.2);
-}
-
-/* Password Toggle */
+/* =========================
+   PASSWORD WRAPPER FIX
+========================= */
 .password-input-wrapper {
     position: relative;
+    width: 100%;
 }
 
 .password-input-wrapper input {
-    padding-right: 3rem;
+    padding-right: 40px;
+    /* space for eye icon */
 }
 
+/* Toggle button */
 .toggle-password {
     position: absolute;
-    right: 0.75rem;
     top: 50%;
+    right: 12px;
     transform: translateY(-50%);
-    background: none;
     border: none;
+    background: transparent;
     cursor: pointer;
-    font-size: 1.2rem;
-    padding: 0.25rem;
-    color: #868e96;
-    transition: color 0.2s;
+    font-size: 16px;
+    padding: 0;
 }
 
-.toggle-password:hover {
-    color: #4c6ef5;
-}
-
-/* Error Messages */
-.error-message {
-    margin-top: 0.5rem;
+/* =========================
+   INVALID STATE
+========================= */
+.invalid {
+    border-color: #ef4444 !important;
+    background: #fff5f5 !important;
 }
 
 .error-message small {
-    color: #e03131;
-    font-size: 0.85rem;
-    display: block;
+    color: #ef4444;
+    font-size: 12px;
 }
 
-.error-alert {
-    background-color: #ffe0e0;
-    color: #c92a2a;
-    padding: 0.75rem;
-    border-radius: 6px;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-    text-align: center;
-    border: 1px solid #fcc;
-}
-
-/* Remember Me Checkbox */
+/* =========================
+   CHECKBOX
+========================= */
 .checkbox-group {
-    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
 }
 
 .checkbox-label {
     display: flex;
     align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #374151;
     cursor: pointer;
-    font-weight: 400;
-    font-size: 0.9rem;
-    color: #495057;
 }
 
-.checkbox-label input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    margin-right: 0.5rem;
-    cursor: pointer;
-    accent-color: #4c6ef5;
+.checkbox-label input {
+    width: 16px;
+    height: 16px;
+    accent-color: #6366f1;
 }
 
-.checkbox-label span {
-    user-select: none;
+/* =========================
+   ALERT
+========================= */
+.error-alert {
+    background: #fee2e2;
+    color: #b91c1c;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 15px;
 }
 
-/* Submit Button */
+/* =========================
+   BUTTON
+========================= */
 .btn-primary {
     width: 100%;
-    padding: 0.875rem;
-    background: #4c6ef5;
-    color: white;
+    height: 44px;
+    border-radius: 10px;
     border: none;
-    border-radius: 8px;
-    font-size: 1rem;
+    background: #6366f1;
+    color: white;
+    font-size: 15px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
+    transition: all 0.2s ease;
 }
 
 .btn-primary:hover {
-    background: #364fc7;
-    transform: translateY(-2px);
+    background: #4f46e5;
+    transform: translateY(-1px);
 }
 
-.btn-primary:active {
-    transform: translateY(0);
-}
-
-.btn-primary:disabled {
-    background: #a0a0a0;
-    cursor: not-allowed;
-    transform: none;
-}
-
-/* Demo Info */
+/* =========================
+   FOOTER LINKS
+========================= */
 .demo-info {
-    margin-top: 1.5rem;
     text-align: center;
-    padding: 0.75rem;
-    background-color: #e7f5ff;
-    border-radius: 6px;
-    border: 1px solid #74c0fc;
+    margin-top: 15px;
+    font-size: 12px;
+    color: #6b7280;
 }
 
-.demo-info small {
-    color: #1971c2;
-    font-size: 0.85rem;
+.register-link {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 14px;
+    color: #6b7280;
 }
 
-/* Responsive */
-@media (max-width: 480px) {
-    .login-card {
-        padding: 2rem 1.5rem;
-    }
+.register-link a {
+    color: #6366f1;
+    font-weight: 600;
+    text-decoration: none;
+}
 
-    .login-card h1 {
-        font-size: 1.75rem;
-    }
+.register-link a:hover {
+    text-decoration: underline;
 }
