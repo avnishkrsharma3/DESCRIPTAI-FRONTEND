@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product.model';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-product-list',
@@ -12,17 +13,20 @@ import { Product } from '../../models/product.model';
   styleUrls: ['./product-list.component.css']
 })
 export class ProductListComponent implements OnInit {
+  logout() {
+    this.authService.logout();
+  }
   products: Product[] = [];
   filteredProducts: Product[] = [];
   categories: string[] = [];
-  
+
   searchQuery: string = '';
   selectedCategory: string = 'all';
   loading: boolean = false;
   isChecked: boolean = true;
   public selectedProducts: Product[] = [];
 
-  constructor(private productService: ProductService, private cdr: ChangeDetectorRef) {}
+  constructor(private productService: ProductService, private cdr: ChangeDetectorRef, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.loadProducts();
@@ -37,7 +41,7 @@ export class ProductListComponent implements OnInit {
   }
 
   isSelected(product: Product): boolean {
-    return this.selectedProducts.some(p => p.id === product.id); 
+    return this.selectedProducts.some(p => p.id === product.id);
   }
 
   isAllSelected(): boolean {
