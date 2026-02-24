@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -20,8 +20,9 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -51,8 +52,16 @@ export class LoginComponent implements OnInit {
 
     const { username, password, rememberMe } = this.loginForm.value;
 
+    const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/products'
     if (this.authService.login(username, password, rememberMe)) {
-      this.router.navigate(['/products']);
+      // TODO: Get returnUrl from query params
+
+      console.log(returnUrl)
+      this.router.navigateByUrl(returnUrl).then(
+        (success) => console.log('Navigation result:', success)
+      ).catch(
+        (error) => console.log('Navigation error:', error)
+      );
     } else {
       this.errorMessage = 'Invalid username or password';
     }

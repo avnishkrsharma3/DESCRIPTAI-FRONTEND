@@ -6,6 +6,12 @@ interface User {
     token: string;
 }
 
+interface AuthData {
+    username: string;
+    token: string;
+    expiresAt: number;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -17,29 +23,42 @@ export class AuthService {
     public currentUser$ = this.currentUserSubject.asObservable();
 
     constructor() {
-        // Check if user was already logged in (Remember Me)
-        const token = localStorage.getItem('auth_token');
-        const username = localStorage.getItem('username');
+        const authDataString = localStorage.getItem('auth_data') || sessionStorage.getItem('auth_data');
 
-        if (token && username) {
-            this.isAuthenticatedSubject.next(true);
-            this.currentUserSubject.next({ username, token });
+        if (authDataString) {
+            try {
+                const authData: AuthData = JSON.parse(authDataString);
+                
+                if (Date.now() <= authData.expiresAt) {
+                    this.isAuthenticatedSubject.next(true);
+                    this.currentUserSubject.next({ 
+                        username: authData.username, 
+                        token: authData.token 
+                    });
+                } else {
+                    this.logout();
+                }
+            } catch (error) {
+                console.error('Error loading auth data:', error);
+            }
         }
     }
 
     login(username: string, password: string, rememberMe: boolean = false): boolean {
-        // Mock login - accept any credentials that meet validation
         if (username && password) {
             const token = 'mock-token-' + Date.now();
+            const expiresAt = Date.now() + (60 * 60 * 1000); // 1 hour
+
+            const authData: AuthData = {
+                token: token,
+                username: username,
+                expiresAt: expiresAt
+            };
 
             if (rememberMe) {
-                // Store in localStorage for persistence
-                localStorage.setItem('auth_token', token);
-                localStorage.setItem('username', username);
+                localStorage.setItem('auth_data', JSON.stringify(authData));
             } else {
-                // Store in sessionStorage (cleared when browser closes)
-                sessionStorage.setItem('auth_token', token);
-                sessionStorage.setItem('username', username);
+                sessionStorage.setItem('auth_data', JSON.stringify(authData));
             }
 
             this.isAuthenticatedSubject.next(true);
@@ -50,7 +69,8 @@ export class AuthService {
     }
 
     logout(): void {
-        // Clear both localStorage and sessionStorage
+        localStorage.removeItem('auth_data');
+        sessionStorage.removeItem('auth_data');
         localStorage.removeItem('auth_token');
         localStorage.removeItem('username');
         sessionStorage.removeItem('auth_token');
@@ -61,7 +81,26 @@ export class AuthService {
     }
 
     isLoggedIn(): boolean {
-        return this.isAuthenticatedSubject.value;
+        const authDataString = localStorage.getItem('auth_data') || sessionStorage.getItem('auth_data');
+        
+        if (!authDataString) {
+            return false;
+        }
+
+        try {
+            const authData: AuthData = JSON.parse(authDataString);
+            
+            if (Date.now() > authData.expiresAt) {
+                console.log('Token expired');
+                this.logout();
+                return false;
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Error parsing auth data:', error);
+            return false;
+        }
     }
 
     getCurrentUser(): User | null {
