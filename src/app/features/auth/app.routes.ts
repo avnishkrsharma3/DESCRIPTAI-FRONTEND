@@ -1,8 +1,9 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './components/login-component/login-component';
-import { ProductListComponent } from './components/product-list.component/product-list.component';
-import { RegisterComponent } from './components/register-component/register-component';
-import { authGuard } from './guards/auth-guard';
+import { LoginComponent } from './login/login-component';
+import { ProductListComponent } from '../products/product-list.component';
+import { RegisterComponent } from './register/register-component';
+import { authGuard } from '../../core/guards/auth-guard';
+
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
