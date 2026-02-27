@@ -1,0 +1,39 @@
+<form [formGroup]="form" (ngSubmit)="onGenerate()">
+
+    <h2>{{ products.length }} Products Selected</h2>
+
+    <div>
+        <h3>Select Tone</h3>
+        <div *ngFor="let tone of tones">
+            <label>
+                <input type="radio" [value]="tone" formControlName="tone">
+                {{ tone }}
+            </label>
+        </div>
+    </div>
+
+    <div>
+        <h3>Select Length</h3>
+        <div *ngFor="let length of lengths">
+            <label>
+                <input type="radio" [value]="length" formControlName="length">
+                {{ length }}
+            </label>
+        </div>
+    </div>
+
+    <div>
+        <h3>Select Focus</h3>
+        <div *ngFor="let focus of focusOptions">
+            <label>
+                <input type="radio" [value]="focus" formControlName="focus">
+                {{ focus }}
+            </label>
+        </div>
+    </div>
+
+    <button type="submit" [disabled]="form.invalid">
+        Generate Descriptions
+    </button>
+
+</form>
