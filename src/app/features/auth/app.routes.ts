@@ -3,7 +3,7 @@ import { LoginComponent } from './login/login-component';
 import { ProductListComponent } from '../products/product-list.component';
 import { RegisterComponent } from './register/register-component';
 import { authGuard } from '../../core/guards/auth-guard';
-
+import { DescriptionGenerate } from '../descriptions/generate/description-generate/description-generate';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -13,7 +13,7 @@ export const routes: Routes = [
 
   // protected route
   { path: 'products',  component: ProductListComponent, canActivate:[authGuard] },
-  { path: 'description',  component: ProductListComponent, canActivate:[authGuard] }
-
+  { path: 'description',  component: ProductListComponent, canActivate:[authGuard] },
+  { path: 'description-generate', component: DescriptionGenerate, canActivate:[authGuard]}
 
 ];

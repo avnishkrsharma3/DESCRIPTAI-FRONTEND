@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../core/services/product.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Product } from '../../core/models/product.model';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-product-list',
@@ -26,7 +28,9 @@ export class ProductListComponent implements OnInit {
   isChecked: boolean = true;
   public selectedProducts: Product[] = [];
 
-  constructor(private productService: ProductService, private cdr: ChangeDetectorRef, private authService: AuthService) { }
+  constructor(private productService: ProductService, private cdr: ChangeDetectorRef, private authService: AuthService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.loadProducts();
@@ -117,6 +121,14 @@ export class ProductListComponent implements OnInit {
   generateDescriptions(): void {
     console.log('Generating descriptions for:', this.selectedProducts);
     // Future implementation: call a service to generate descriptions
+    const ids = this.selectedProducts.map( p => p.id);
+  //  console.log(ids);
+    if(this.selectedProducts == null || this.selectedProducts.length == 0){
+      return;
+    }
+    this.router.navigate(['/description-generate'], {
+      state: {productIds:  ids}
+    })
   }
 
   clearSelection(): void {
