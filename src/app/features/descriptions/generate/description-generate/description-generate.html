@@ -1,39 +1,59 @@
 <form [formGroup]="form" (ngSubmit)="onGenerate()">
 
     <h2>{{ products.length }} Products Selected</h2>
-
-    <div>
-        <h3>Select Tone</h3>
-        <div *ngFor="let tone of tones">
-            <label>
-                <input type="radio" [value]="tone" formControlName="tone">
-                {{ tone }}
-            </label>
+    <div class="section">
+        <div>
+            <h3>Select Tone</h3>
+            <div *ngFor="let tone of tones">
+                <label>
+                    <input type="radio" [value]="tone" formControlName="tone">
+                    <span>{{ tone }}</span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div>
+            <h3>Select Length</h3>
+            <div *ngFor="let length of lengths">
+                <label>
+                    <input type="radio" [value]="length" formControlName="length">
+                    <span> {{ length }} </span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div>
+            <h3>Select Focus</h3>
+            <div *ngFor="let focus of focusOptions">
+                <label>
+                    <input type="radio" [value]="focus" formControlName="focus">
+                    <span>{{ focus }}</span>
+                </label>
+            </div>
         </div>
     </div>
 
-    <div>
-        <h3>Select Length</h3>
-        <div *ngFor="let length of lengths">
-            <label>
-                <input type="radio" [value]="length" formControlName="length">
-                {{ length }}
-            </label>
-        </div>
-    </div>
+    <div class="section" *ngIf="preview">
 
-    <div>
-        <h3>Select Focus</h3>
-        <div *ngFor="let focus of focusOptions">
-            <label>
-                <input type="radio" [value]="focus" formControlName="focus">
-                {{ focus }}
-            </label>
+        <div class="badges">
+            <span class="badge">{{ form.value.tone }}</span>
+            <span class="badge">{{ form.value.length }}</span>
+            <span class="badge">{{ form.value.focus }}</span>
         </div>
+        <div *ngIf="isTyping" class="typing">
+            Generating preview...
+        </div>
+        <div class="preview-box">
+            <p>{{ preview }}</p>
+        </div>
+
     </div>
 
     <button type="submit" [disabled]="form.invalid">
         Generate Descriptions
     </button>
+
 
 </form>
