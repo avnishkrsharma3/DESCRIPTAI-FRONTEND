@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { debounce } from '@angular/forms/signals';
 import { debounceTime } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-description-generate',
@@ -21,11 +22,12 @@ export class DescriptionGenerate {
   form!: FormGroup;
   preview!: string;
   isTyping: boolean = false;
-
+  prompts!: string;
+  
   ngOnInit(): void {
     const state = history.state;
-    console.log("logging state");
-    // console.log(state.productIds.length);
+    console.log("before");
+    console.log(state.productIds);
     if (state == null || state.productIds == null || state.productIds.length === 0)
       return
     this.products = state.productIds;
@@ -40,13 +42,16 @@ export class DescriptionGenerate {
     });
   }
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private router: Router) {
 
   }
 
   onGenerate() {
-    console.log(this.products[0])
-    console.log(this.form.value);
+    const { tone, length, focus } = this.form.value;
+    this.prompts = tone+","+length+","+focus;
+    this.router.navigate(['/description-generation'], {
+      state: {prompts: this.prompts, productIds: this.products}
+    })
   }
 
 

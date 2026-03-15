@@ -1,0 +1,15 @@
+<div *ngIf="loading" class="loading-spinner"></div>
+
+<div *ngIf="!loading && response">
+  <h2 class="header">AI-Generated Product Descriptions</h2>
+  <div class="card-container">
+    <div *ngFor="let product of response" class="product-card">
+      <img [src]="product.imageURL" alt="{{ product.productName }}" class="product-image">
+      <div class="card-content">
+        <h3>{{ product.productName }}</h3>
+        <p class="category">{{ product.category }}</p>
+        <p class="description">{{ product.aiGeneratedDescription }}</p>
+      </div>
+    </div>
+  </div>
+</div>
