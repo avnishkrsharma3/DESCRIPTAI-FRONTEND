@@ -16,8 +16,9 @@ export class DescriptionGeneration implements OnInit {
   productIds: string[] = [];
   prompts: string = '';
   loading = false;
-  response: any;
+  response: any[] = [];
   error: any;
+  approvedCount = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -50,5 +51,45 @@ export class DescriptionGeneration implements OnInit {
         )
         .subscribe();
     }
+  }
+
+  approve(product: any): void {
+    this.productService.saveProduct(product).subscribe({
+      next: () => {
+        this.approvedCount++;
+        product.approved = true;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error saving product:', err),
+    });
+  }
+
+  reject(product: any): void {
+    product.loading = true;
+    this.productService
+      .generateDescription([product.productId], this.prompts)
+      .pipe(
+        tap((newProduct) => {
+          const index = this.response.findIndex(
+            (p) => p.productId === product.productId
+          );
+          if (index !== -1) {
+            this.response[index] = newProduct[0];
+          }
+        }),
+        catchError((err) => {
+          console.error('Error refetching description:', err);
+          return of(null);
+        }),
+        finalize(() => {
+          product.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe();
+  }
+
+  trackByProductId(index: number, product: any): string {
+    return product.productId;
   }
 }

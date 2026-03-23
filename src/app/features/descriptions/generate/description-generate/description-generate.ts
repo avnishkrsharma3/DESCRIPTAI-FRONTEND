@@ -33,7 +33,7 @@ export class DescriptionGenerate {
     this.products = state.productIds;
     this.form = this.fb.group({
       tone: ['Professional', Validators.required],
-      length: ['Medium', Validators.required],
+      length: ['Short', Validators.required],
       focus: ['Seo', Validators.required]
     });
     this.generatePreview();

@@ -1,6 +1,6 @@
 export const environment = {
     production: false,
-    apiUrl: 'http://localhost:8081/api/products',
+    apiUrl: 'http://localhost:8081/api',
     apiTimeout: 10000,
     enableLogging: true,
     appVersion: '1.0.0-dev',

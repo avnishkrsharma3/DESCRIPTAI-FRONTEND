@@ -1,14 +1,44 @@
 <div *ngIf="loading" class="loading-spinner"></div>
 
 <div *ngIf="!loading && response">
-  <h2 class="header">AI-Generated Product Descriptions</h2>
+  <div class="header-container">
+    <h2 class="header">AI-Generated Product Descriptions SEO Friendly</h2>
+    <div class="approved-counter">Approved: {{ approvedCount }}</div>
+  </div>
   <div class="card-container">
-    <div *ngFor="let product of response" class="product-card">
-      <img [src]="product.imageURL" alt="{{ product.productName }}" class="product-image">
+    <div
+      *ngFor="let product of response; trackBy: trackByProductId"
+      class="product-card"
+      [class.approved]="product.approved"
+    >
+      <div *ngIf="product.loading" class="card-spinner"></div>
+      <img
+        [src]="product.imageURL"
+        alt="{{ product.productName }}"
+        class="product-image"
+      />
       <div class="card-content">
         <h3>{{ product.productName }}</h3>
-        <p class="category">{{ product.category }}</p>
-        <p class="description">{{ product.aiGeneratedDescription }}</p>
+        <p class="category" *ngIf="product.category"><strong>Category:</strong> {{ product.category }}</p>
+        <p class="description" *ngIf="product.originalDescription"><strong>Original Description:</strong> {{ product.originalDescription }}</p>
+        <p class="description"><strong>AI Generated Description:</strong> {{ product.aiGeneratedDescription }}</p>
+        <p class="ai-model" *ngIf="product.aiModel"><strong>AI Model:</strong> {{ product.aiModel }}</p>
+        <div class="button-group">
+          <button
+            class="btn btn-approve"
+            (click)="approve(product)"
+            [disabled]="product.approved"
+          >
+            Approve
+          </button>
+          <button
+            class="btn btn-reject"
+            (click)="reject(product)"
+            [disabled]="product.approved"
+          >
+            Reject
+          </button>
+        </div>
       </div>
     </div>
   </div>

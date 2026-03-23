@@ -7,5 +7,6 @@ export const API_ENDPOINTS = {
         GET_ALL: '/api/products',
         SEARCH: '/api/products/search',
         CATEGORIES: '/api/products/categories',
+        GENERATE_DESCRIPTION: '/api/products/generate',
     },
 };
