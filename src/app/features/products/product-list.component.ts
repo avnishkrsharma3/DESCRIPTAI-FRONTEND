@@ -27,6 +27,7 @@ export class ProductListComponent implements OnInit {
   loading: boolean = false;
   isChecked: boolean = true;
   public selectedProducts: Product[] = [];
+  public selectedProductId: number[] = [];
 
   constructor(private productService: ProductService, private cdr: ChangeDetectorRef, private authService: AuthService,
     private router: Router
@@ -119,7 +120,7 @@ export class ProductListComponent implements OnInit {
   }
 
   generateDescriptions(): void {
-    console.log('Generating descriptions for:', this.selectedProducts);
+  //console.log('Generating descriptions for:', this.selectedProducts);
     // Future implementation: call a service to generate descriptions
     const ids = this.selectedProducts.map( p => p.id);
   //  console.log(ids);
