@@ -4,6 +4,7 @@ import { ProductService } from '../../../../core/services/product.service';
 import { CommonModule } from '@angular/common';
 import { of } from 'rxjs';
 import { catchError, finalize, tap } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-description-generation',
@@ -23,8 +24,9 @@ export class DescriptionGeneration implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private productService: ProductService,
-    private cdr: ChangeDetectorRef
-  ) {}
+    private cdr: ChangeDetectorRef,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.productIds = history.state.productIds;
@@ -35,9 +37,11 @@ export class DescriptionGeneration implements OnInit {
       this.productService
         .generateDescription(this.productIds, this.prompts)
         .pipe(
-          tap((response) => {
-            console.log('Received response:', response);
-            this.response = response;
+          tap((data) => {
+            console.log('Received response:', data);
+            this.response = data; // 1. Assigln data first
+            // 2. Then calculate count from the new data
+            this.approvedCount = this.response.filter(p => p.approved).length;
           }),
           catchError((err) => {
             console.error('Error fetching description:', err);
@@ -92,4 +96,9 @@ export class DescriptionGeneration implements OnInit {
   trackByProductId(index: number, product: any): string {
     return product.productId;
   }
+  goToDashboard() {
+    // Example using Angular Router
+    this.router.navigate(['/approve-dashboard']);
+  }
+
 }

@@ -27,7 +27,8 @@ export class ProductService {
   }
 
   saveProduct(product: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/AI/save`, product);
+    console.log(product);
+    return this.http.post<any>(`${this.apiUrl}/products/save`, product);
   }
   
 }
