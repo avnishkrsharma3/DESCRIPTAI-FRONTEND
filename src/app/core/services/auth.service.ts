@@ -3,6 +3,9 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { catchError, map, tap, throwError } from 'rxjs';
 
+import { environment } from '../../../environments/environment';
+
+
 interface User {
     username: string;
     token: string;
@@ -45,8 +48,8 @@ const AUTH_STORAGE_KEY = 'auth_data';
     providedIn: 'root'
 })
 export class AuthService {
-    private readonly loginUrl = 'http://localhost:8081/api/v1/auth/login';
-    private readonly registerUrl = 'http://localhost:8081/api/v1/auth/register';
+
+    private apiUrl = environment.apiUrl;
 
     private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
     public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
@@ -85,7 +88,7 @@ export class AuthService {
     login(username: string, password: string, rememberMe: boolean = false): Observable<User> {
         const body: LoginRequest = { username, password };
 
-        return this.http.post<LoginResponse>(this.loginUrl, body).pipe(
+        return this.http.post<LoginResponse>((`${this.apiUrl}/v1/auth/login`), body).pipe(
             map(response => this.persistSession(response.token, username, rememberMe)),
             catchError((error: HttpErrorResponse) => this.handleAuthError(error))
         );
@@ -99,7 +102,7 @@ export class AuthService {
     register(username: string, password: string): Observable<string> {
         const body: RegisterRequest = { username, password };
 
-        return this.http.post<RegisterResponse>(this.registerUrl, body).pipe(
+        return this.http.post<RegisterResponse>((`${this.apiUrl}/v1/auth/register`), body).pipe(
             map(response => response.message),
             catchError((error: HttpErrorResponse) => this.handleAuthError(error))
         );
