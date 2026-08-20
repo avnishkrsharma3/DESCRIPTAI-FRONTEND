@@ -1,11 +1,22 @@
 {
-    "routes": [
+  "routes": [
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "^/login$",
+      "has": [
         {
-            "handle": "filesystem"
-        },
-        {
-            "src": "/.*",
-            "dest": "/index.html"
+          "type": "header",
+          "key": "user-agent",
+          "value": "(?i)facebookexternalhit|facebot|twitterbot|linkedinbot|slackbot|whatsapp|telegrambot|discordbot|pinterest|googlebot"
         }
-    ]
+      ],
+      "dest": "/api/og-login"
+    },
+    {
+      "src": "/.*",
+      "dest": "/index.html"
+    }
+  ]
 }
