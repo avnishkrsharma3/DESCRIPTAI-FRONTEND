@@ -1,0 +1,45 @@
+<div class="app-frame">
+  <header class="app-header">
+    <a class="brand" routerLink="/home" aria-label="DescriptAI home">
+      <span class="brand-mark" aria-hidden="true">d</span>
+      <span>descript<span class="brand-accent">ai</span></span>
+    </a>
+
+    <nav class="primary-nav" aria-label="Main navigation">
+      <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        Home
+      </a>
+      <a routerLink="/products" routerLinkActive="active">Product catalog</a>
+      <a routerLink="/approve-dashboard" routerLinkActive="active">Approvals</a>
+    </nav>
+
+    <details class="profile-menu">
+      <summary class="profile-trigger" aria-label="Open profile menu">
+        <span class="profile-avatar" aria-hidden="true">{{ username.charAt(0).toUpperCase() }}</span>
+        <span class="profile-name">{{ username }}</span>
+        <span class="profile-chevron" aria-hidden="true">⌄</span>
+      </summary>
+      <div class="profile-popover">
+        <div class="profile-summary">
+          <span class="profile-avatar profile-avatar-large" aria-hidden="true">
+            {{ username.charAt(0).toUpperCase() }}
+          </span>
+          <span>
+            <strong>{{ username }}</strong>
+            <small>Signed in</small>
+          </span>
+        </div>
+        <a class="profile-home-link" routerLink="/home">Go to home</a>
+        <button class="logout-button" type="button" (click)="logout()">Log out</button>
+      </div>
+    </details>
+  </header>
+
+  <main class="app-content">
+    <router-outlet></router-outlet>
+  </main>
+  <footer class="app-footer">
+    <span>DescriptAI</span>
+    <span>Product content, made clearer.</span>
+  </footer>
+</div>

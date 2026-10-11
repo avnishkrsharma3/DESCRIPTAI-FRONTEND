@@ -63,7 +63,7 @@ export class LoginComponent implements OnInit {
     }
 
     const { username, password, rememberMe } = this.loginForm.value;
-    const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/products';
+    const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/home';
 
     this.isSubmitting.set(true);
     const startedAt = Date.now();

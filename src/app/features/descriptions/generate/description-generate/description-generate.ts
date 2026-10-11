@@ -2,13 +2,12 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { debounce } from '@angular/forms/signals';
 import { debounceTime } from 'rxjs';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-description-generate',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './description-generate.html',
   styleUrl: './description-generate.css',
 })
@@ -25,17 +24,17 @@ export class DescriptionGenerate {
   prompts!: string;
   
   ngOnInit(): void {
-    const state = history.state;
-    console.log("before");
-    console.log(state.productIds);
-    if (state == null || state.productIds == null || state.productIds.length === 0)
-      return
-    this.products = state.productIds;
     this.form = this.fb.group({
       tone: ['Professional', Validators.required],
       length: ['Short', Validators.required],
       focus: ['Seo', Validators.required]
     });
+    const state = history.state as { productIds?: number[] };
+    this.products = Array.isArray(state?.productIds) ? state.productIds : [];
+    if (this.products.length === 0) {
+      return;
+    }
+
     this.generatePreview();
     this.form.valueChanges.pipe(debounceTime(0)).subscribe(() => {
       this.generatePreview();

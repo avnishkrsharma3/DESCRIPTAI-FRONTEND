@@ -1,103 +1,121 @@
-<div class="container">
-  <h1>Product Catalog</h1>
-  <button type="button" (click)="logout()">Logout</button>
-  <!-- Filters Section -->
-  <div class="filters">
-    <!-- Search Input -->
-    <div class="search-box">
+<main class="catalog-page">
+  <header class="catalog-heading">
+    <div>
+      <p class="eyebrow">DISCOVER YOUR PRODUCTS</p>
+      <h1>Product catalog</h1>
+      <p class="catalog-subtitle">
+        Choose products to create descriptions tailored to your brand.
+      </p>
+    </div>
+    <span class="catalog-count">
+      <strong>{{ filteredProducts.length }}</strong>
+      {{ filteredProducts.length === 1 ? 'product' : 'products' }}
+    </span>
+  </header>
+
+  <section class="filters" aria-label="Search and filter products">
+    <form class="search-box" (ngSubmit)="onSearch()">
+      <label class="visually-hidden" for="product-search">Search products</label>
+      <span class="search-icon" aria-hidden="true">⌕</span>
       <input
-        type="text"
+        id="product-search"
+        type="search"
         class="search-input"
-        placeholder="Search products..."
+        name="searchQuery"
+        placeholder="Search products by name or keyword..."
         [(ngModel)]="searchQuery"
-        (keyup.enter)="onSearch()"
       />
-      <button class="btn btn-primary" (click)="onSearch()">Search</button>
-    </div>
+      <button class="btn btn-primary" type="submit" [disabled]="loading">Search</button>
+    </form>
 
-    <!-- Category Filter -->
-    <div class="filter-group">
-      <label for="category-filter">Category</label>
+    <label class="filter-group" for="category-filter">
+      <span>Category</span>
       <select id="category-filter" [(ngModel)]="selectedCategory" (change)="applyFilters()">
-        <option value="all">All Categories</option>
-        <option *ngFor="let category of categories" [value]="category">
-          {{ category }}
-        </option>
+        <option value="all">All categories</option>
+        @for (category of categories; track category) {
+        <option [value]="category">{{ category }}</option>
+        }
       </select>
-    </div>
+    </label>
 
-    <!-- Clear Filters -->
-    <button class="btn clear-button" (click)="clearFilters()">Clear Filters</button>
-  </div>
+    <button class="btn clear-button" type="button" (click)="clearFilters()">Reset</button>
+  </section>
 
-
-  <!-- Selection Toolbar -->
-  <div class="selection-toolbar" [class.show]="selectedProducts.length > 0">
+  @if (selectedProducts.length > 0) {
+  <section class="selection-toolbar" aria-live="polite" aria-label="Selected products">
     <div class="selected-count">
-      {{ selectedProducts.length }} product(s) selected
+      <span class="selection-check" aria-hidden="true">✓</span>
+      <strong>{{ selectedProducts.length }}</strong>
+      {{ selectedProducts.length === 1 ? 'product' : 'products' }} selected
     </div>
     <div class="actions">
-        <button class="btn btn-primary" (click)="toggleSelectAll()" >
-            Select All
-        </button>
-        <button class="btn btn-primary" (click)="generateDescriptions()" [disabled]="selectedProducts.length === 0">
-            Generate Descriptions
-        </button>
-        <button class="btn clear-button" (click)="clearSelection()">
-          Clear Selection
-        </button>
+      <button class="btn btn-secondary" type="button" (click)="toggleSelectAll()">
+        {{ isAllSelected() ? 'Clear all' : 'Select all' }}
+      </button>
+      <button class="btn btn-primary" type="button" (click)="generateDescriptions()">
+        Generate descriptions <span aria-hidden="true">→</span>
+      </button>
+      <button class="btn text-button" type="button" (click)="clearSelection()">Clear selection</button>
     </div>
+  </section>
+  }
+
+  @if (loading) {
+  <div class="loading" role="status" aria-live="polite">
+    <span class="spinner" aria-hidden="true"></span>
+    <p>Loading your products…</p>
   </div>
-
-
-
-  <!-- Loading Spinner -->
-  <div *ngIf="loading" class="loading">
-    <div class="spinner">
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-    </div>
-    <p>Loading products...</p>
-  </div>
-
-  <!-- Products Grid -->
-  <div *ngIf="!loading && filteredProducts.length > 0" class="products-grid">
-    <div *ngFor="let product of filteredProducts" class="product-card" [class.selected]="isSelected(product)" (click)="toggleSelection(product)">
+  } @else if (errorMessage; as message) {
+  <section class="empty-state error-state" role="alert">
+    <span class="empty-state-icon" aria-hidden="true">!</span>
+    <h2>Catalog unavailable</h2>
+    <p>{{ message }}</p>
+    <button class="btn btn-secondary" type="button" (click)="loadProducts()">Try again</button>
+  </section>
+  } @else if (filteredProducts.length > 0) {
+  <section class="products-grid" aria-label="Product results">
+    @for (product of filteredProducts; track product.id) {
+    <article class="product-card" [class.selected]="isSelected(product)">
       <div class="product-image-container">
-        <img [src]="product.thumbnail" [alt]="product.title" class="product-image" />
+        <img [src]="product.thumbnail" [alt]="product.title" class="product-image" loading="lazy" />
+        <label class="product-select">
+          <input
+            type="checkbox"
+            [checked]="isSelected(product)"
+            [attr.aria-label]="'Select ' + product.title"
+            (change)="toggleSelection(product)"
+          />
+          <span aria-hidden="true"></span>
+        </label>
+        <span class="category-chip">{{ product.category }}</span>
       </div>
       <div class="product-info">
-        <h3>{{ product.title }}</h3>
-        <div class="brand-category">
-          <span class="brand">{{ product.brand }}</span>
-          <span>|</span>
-          <span class="category">{{ product.category }}</span>
+        <div class="product-title-row">
+          <h2>{{ product.title }}</h2>
+          @if (product.rating) {
+          <span class="rating" [attr.aria-label]="'Rating ' + product.rating + ' out of 5'">
+            <span aria-hidden="true">★</span> {{ product.rating }}
+          </span>
+          }
         </div>
+        @if (product.brand) {
+        <p class="brand">{{ product.brand }}</p>
+        }
         <p class="description">{{ product.description }}</p>
         <div class="product-footer">
           <span class="price">${{ product.price }}</span>
-          <span class="rating" *ngIf="product.rating">⭐ {{ product.rating }}</span>
+          <span class="select-hint">{{ isSelected(product) ? 'Selected' : 'Select to generate' }}</span>
         </div>
       </div>
-      <div class="selection-overlay">
-        <input
-          type="checkbox"
-          class="product-checkbox"
-          [id]="'checkbox-' + product.id"
-          [checked]="isSelected(product)"
-          (change)="toggleSelection(product)"
-          (click)="$event.stopPropagation()"
-        />
-        <label [for]="'checkbox-' + product.id" class="product-checkbox-label">Selected</label>
-      </div>
-    </div>
-  </div>
-
-  <!-- Empty State -->
-  <div *ngIf="!loading && filteredProducts.length === 0" class="empty-state">
-    <div class="empty-state-icon">😕</div>
-    <p>No products found matching your criteria.</p>
-    <span>Try adjusting your filters or search terms.</span>
-  </div>
-</div>
+    </article>
+    }
+  </section>
+  } @else {
+  <section class="empty-state" role="status">
+    <span class="empty-state-icon" aria-hidden="true">⌕</span>
+    <h2>No products found</h2>
+    <p>Try another search or reset your category filter.</p>
+    <button class="btn btn-secondary" type="button" (click)="clearFilters()">Reset filters</button>
+  </section>
+  }
+</main>
