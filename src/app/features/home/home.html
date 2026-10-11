@@ -1,0 +1,76 @@
+<main class="home-page">
+  <section class="welcome-banner" aria-labelledby="welcome-title">
+    <div class="welcome-copy">
+      <p class="eyebrow">YOUR CONTENT WORKSPACE</p>
+      <h1 id="welcome-title">Good content starts <span>with a better workflow.</span></h1>
+      <p class="welcome-description">
+        Find products, create compelling descriptions, and review approved content—all in one place.
+      </p>
+      <a class="primary-action" routerLink="/products">
+        Explore product catalog
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+    <div class="welcome-art" aria-hidden="true">
+      <div class="art-orbit orbit-one"></div>
+      <div class="art-orbit orbit-two"></div>
+      <div class="art-card">
+        <span class="art-card-icon">✦</span>
+        <span class="art-line art-line-long"></span>
+        <span class="art-line art-line-medium"></span>
+        <span class="art-chip">AI-ready</span>
+      </div>
+      <span class="art-sparkle sparkle-one">✦</span>
+      <span class="art-sparkle sparkle-two">✧</span>
+    </div>
+  </section>
+
+  <section class="workspace-section" aria-labelledby="workspace-title">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">GET THINGS DONE</p>
+        <h2 id="workspace-title">Choose your workspace</h2>
+      </div>
+      <p>Pick up where you need to be.</p>
+    </div>
+
+    <div class="workspace-grid">
+      <a class="workspace-card catalog-card" routerLink="/products">
+        <span class="card-icon catalog-icon" aria-hidden="true">▦</span>
+        <span class="card-content">
+          <span class="card-eyebrow">DISCOVER &amp; CREATE</span>
+          <strong>Product catalog</strong>
+          <span>Browse your products, select items, and generate tailored descriptions.</span>
+        </span>
+        <span class="card-arrow" aria-hidden="true">↗</span>
+      </a>
+
+      <a class="workspace-card approvals-card" routerLink="/approve-dashboard">
+        <span class="card-icon approvals-icon" aria-hidden="true">✓</span>
+        <span class="card-content">
+          <span class="card-eyebrow">REVIEW &amp; TRACK</span>
+          <strong>Approval dashboard</strong>
+          <span>Review approved copy and browse the product approval history.</span>
+        </span>
+        <span class="card-arrow" aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="workflow-strip" aria-label="How the workspace works">
+    <div class="workflow-step">
+      <span class="step-number">01</span>
+      <span><strong>Select products</strong><small>Start from your catalog</small></span>
+    </div>
+    <span class="step-connector" aria-hidden="true"></span>
+    <div class="workflow-step">
+      <span class="step-number">02</span>
+      <span><strong>Generate copy</strong><small>Shape tone and focus</small></span>
+    </div>
+    <span class="step-connector" aria-hidden="true"></span>
+    <div class="workflow-step">
+      <span class="step-number">03</span>
+      <span><strong>Review approvals</strong><small>Keep content on track</small></span>
+    </div>
+  </section>
+</main>

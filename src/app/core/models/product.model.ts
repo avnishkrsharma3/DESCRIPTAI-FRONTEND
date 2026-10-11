@@ -17,3 +17,14 @@ export interface ProductsResponse {
     limit: number;
 }
 
+export interface ApprovedProduct {
+    productName: string;
+    category: string;
+    originalDescription: string;
+    aiGeneratedDescription: string;
+    aiModel: string;
+    imageURL: string;
+    createdTime: string;
+    approvedTime: string;
+    productApprovedBy: string;
+}

@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../core/services/product.service';
-import { AuthService } from '../../core/services/auth.service';
 import { Product } from '../../core/models/product.model';
 import { Router } from '@angular/router';
 
@@ -15,9 +14,6 @@ import { Router } from '@angular/router';
   styleUrls: ['./product-list.component.css']
 })
 export class ProductListComponent implements OnInit {
-  logout() {
-    this.authService.logout();
-  }
   products: Product[] = [];
   filteredProducts: Product[] = [];
   categories: string[] = [];
@@ -25,11 +21,12 @@ export class ProductListComponent implements OnInit {
   searchQuery: string = '';
   selectedCategory: string = 'all';
   loading: boolean = false;
+  errorMessage: string | null = null;
   isChecked: boolean = true;
   public selectedProducts: Product[] = [];
   public selectedProductId: number[] = [];
 
-  constructor(private productService: ProductService, private cdr: ChangeDetectorRef, private authService: AuthService,
+  constructor(private productService: ProductService, private cdr: ChangeDetectorRef,
     private router: Router
   ) { }
 
@@ -66,6 +63,7 @@ export class ProductListComponent implements OnInit {
 
   loadProducts(): void {
     this.loading = true;
+    this.errorMessage = null;
     this.productService.getAllProducts().subscribe({
       next: (response) => {
         this.products = response.products;
@@ -77,7 +75,9 @@ export class ProductListComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading products:', error);
+        this.errorMessage = 'We could not load the product catalog. Check your connection and try again.';
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -89,6 +89,7 @@ export class ProductListComponent implements OnInit {
     }
 
     this.loading = true;
+    this.errorMessage = null;
     this.productService.searchProducts(this.searchQuery).subscribe({
       next: (response) => {
         this.products = response.products;
@@ -98,7 +99,9 @@ export class ProductListComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error searching products:', error);
+        this.errorMessage = 'Search is unavailable right now. Please try again.';
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }

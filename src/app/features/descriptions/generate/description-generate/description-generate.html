@@ -1,59 +1,96 @@
-<form [formGroup]="form" (ngSubmit)="onGenerate()">
-
-    <h2>{{ products.length }} Products Selected</h2>
-    <div class="section">
-        <div>
-            <h3>Select Tone</h3>
-            <div *ngFor="let tone of tones">
-                <label>
-                    <input type="radio" [value]="tone" formControlName="tone">
-                    <span>{{ tone }}</span>
-                </label>
-            </div>
-        </div>
+<main class="generate-page">
+  <header class="generate-heading">
+    <div>
+      <p class="eyebrow">DESCRIPTION WORKFLOW · STEP 1 OF 2</p>
+      <h1>Set up your product copy</h1>
+      <p>Choose a tone, length, and focus to guide your AI-generated descriptions.</p>
     </div>
-    <div class="section">
-        <div>
-            <h3>Select Length</h3>
-            <div *ngFor="let length of lengths">
-                <label>
-                    <input type="radio" [value]="length" formControlName="length">
-                    <span> {{ length }} </span>
-                </label>
-            </div>
-        </div>
-    </div>
-    <div class="section">
-        <div>
-            <h3>Select Focus</h3>
-            <div *ngFor="let focus of focusOptions">
-                <label>
-                    <input type="radio" [value]="focus" formControlName="focus">
-                    <span>{{ focus }}</span>
-                </label>
-            </div>
-        </div>
-    </div>
+    <a class="back-link" routerLink="/products"><span aria-hidden="true">←</span> Product catalog</a>
+  </header>
 
-    <div class="section" *ngIf="preview">
+  @if (products.length > 0) {
+  <form [formGroup]="form" (ngSubmit)="onGenerate()">
+    <div class="generate-layout">
+      <div class="options-panel">
+        <div class="selected-products">
+          <span class="selected-count-icon" aria-hidden="true">▦</span>
+          <span>
+            <strong>{{ products.length }} {{ products.length === 1 ? 'product' : 'products' }} selected</strong>
+            <small>Descriptions will be generated for your selection.</small>
+          </span>
+        </div>
 
-        <div class="badges">
-            <span class="badge">{{ form.value.tone }}</span>
-            <span class="badge">{{ form.value.length }}</span>
-            <span class="badge">{{ form.value.focus }}</span>
+        <fieldset class="option-section">
+          <legend>Choose a tone</legend>
+          <p class="option-description">Set the voice your customers will hear.</p>
+          <div class="option-grid">
+            @for (tone of tones; track tone) {
+            <label class="option-card">
+              <input type="radio" [value]="tone" formControlName="tone" />
+              <span>{{ tone }}</span>
+            </label>
+            }
+          </div>
+        </fieldset>
+
+        <fieldset class="option-section">
+          <legend>Choose a length</legend>
+          <p class="option-description">Decide how much detail to include.</p>
+          <div class="option-grid">
+            @for (length of lengths; track length) {
+            <label class="option-card">
+              <input type="radio" [value]="length" formControlName="length" />
+              <span>{{ length }}</span>
+            </label>
+            }
+          </div>
+        </fieldset>
+
+        <fieldset class="option-section">
+          <legend>Choose a focus</legend>
+          <p class="option-description">Highlight what matters most to your audience.</p>
+          <div class="option-grid">
+            @for (focus of focusOptions; track focus) {
+            <label class="option-card">
+              <input type="radio" [value]="focus" formControlName="focus" />
+              <span>{{ focus }}</span>
+            </label>
+            }
+          </div>
+        </fieldset>
+      </div>
+
+      <aside class="preview-panel" aria-labelledby="preview-title">
+        <div class="preview-header">
+          <span class="preview-icon" aria-hidden="true">✦</span>
+          <div>
+            <p class="eyebrow">LIVE PREVIEW</p>
+            <h2 id="preview-title">Your direction</h2>
+          </div>
         </div>
-        <div *ngIf="isTyping" class="typing">
-            Generating preview...
+        <div class="badges" aria-label="Selected options">
+          <span class="badge">{{ form.value.tone }}</span>
+          <span class="badge">{{ form.value.length }}</span>
+          <span class="badge">{{ form.value.focus }}</span>
         </div>
+        @if (isTyping) {
+        <p class="typing" role="status">Preparing your preview…</p>
+        }
         <div class="preview-box">
-            <p>{{ preview }}</p>
+          <p>{{ preview }}</p>
         </div>
-
+        <p class="preview-note">You can review each generated description before approving it.</p>
+        <button class="generate-button" type="submit" [disabled]="form.invalid || !products.length">
+          Generate descriptions <span aria-hidden="true">→</span>
+        </button>
+      </aside>
     </div>
-
-    <button type="submit" [disabled]="form.invalid">
-        Generate Descriptions
-    </button>
-
-
-</form>
+  </form>
+  } @else {
+  <section class="missing-selection" role="status">
+    <h2>No products selected yet</h2>
+    <p>Choose products from the catalog first, then start the description workflow.</p>
+    <a class="generate-button" routerLink="/products">Go to product catalog <span aria-hidden="true">→</span></a>
+  </section>
+  }
+</main>

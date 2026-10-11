@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Product, ProductsResponse } from '../models/product.model';
+import { ApprovedProduct, Product, ProductsResponse } from '../models/product.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -15,6 +15,10 @@ export class ProductService {
   // Get all products
   getAllProducts(limit: number = 100): Observable<ProductsResponse> {
     return this.http.get<ProductsResponse>(`${this.apiUrl}/products`);
+  }
+
+  getApprovedProducts(): Observable<ApprovedProduct[]> {
+    return this.http.get<ApprovedProduct[]>(`${this.apiUrl}/products/aprroved/products`);
   }
 
   // Search for products

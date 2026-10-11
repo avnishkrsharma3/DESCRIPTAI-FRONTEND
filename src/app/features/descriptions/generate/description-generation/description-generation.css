@@ -1,210 +1,229 @@
-/* ===== Global Page ===== */
-body {
-  background-color: #f5f7fb;
-  font-family: 'Segoe UI', sans-serif;
-  margin: 0;
+:host {
+  display: block;
 }
 
-/* Main container */
 .page-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px 30px;
+  padding: 34px 0 12px;
 }
 
-/* ===== Loader ===== */
 .loading-spinner {
-  border: 8px solid #f3f3f3;
-  border-top: 8px solid #3498db;
+  width: 34px;
+  height: 34px;
+  margin: 80px auto;
+  border: 3px solid #e8e2ef;
+  border-top-color: #7557b2;
   border-radius: 50%;
-  width: 100px;
-  height: 100px;
-  animation: spin 1.5s linear infinite;
-
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 9999;
+  animation: spin 800ms linear infinite;
 }
 
-/* ===== Header ===== */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .header-container {
   display: flex;
+  align-items: flex-end;
   justify-content: space-between;
-  align-items: center;
-
-  margin-bottom: 40px;
-  padding: 10px 0;
+  gap: 20px;
+  margin-bottom: 20px;
 }
 
 .header {
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: #2c3e50;
+  max-width: 550px;
+  margin: 0;
+  color: #2d2738;
+  font-size: 27px;
+  font-weight: 720;
+  letter-spacing: -0.8px;
+}
+
+.header::before {
+  display: block;
+  margin-bottom: 7px;
+  color: #795bb5;
+  content: "DESCRIPTION WORKFLOW · STEP 2 OF 2";
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 1.1px;
 }
 
 .header-right {
   display: flex;
   align-items: center;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 9px;
 }
 
 .approved-counter {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #28a745;
-  background: #eafaf1;
-
-  padding: 8px 14px;
-  border-radius: 20px;
+  padding: 8px 10px;
+  border: 1px solid #d9ecdf;
+  border-radius: 7px;
+  color: #26734e;
+  background: #eff9f2;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
-/* Dashboard button */
 .btn-dashboard {
-  padding: 10px 16px;
-  background: linear-gradient(135deg, #007bff, #0056b3);
-  color: white;
-  border-radius: 6px;
-  border: none;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid #674aaa;
+  border-radius: 7px;
+  color: #fff;
+  background: #7052b2;
   cursor: pointer;
-  font-weight: 600;
-  transition: 0.3s;
+  font-size: 10px;
+  font-weight: 700;
 }
 
 .btn-dashboard:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+  background: #5e429e;
 }
 
-/* ===== Cards Layout ===== */
 .card-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-
-  gap: 30px;
-  margin-top: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
+  gap: 15px;
 }
 
-/* ===== Product Card ===== */
 .product-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
   position: relative;
-
-  transition: 0.3s;
-  padding-bottom: 10px;
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+  border: 1px solid #ebe7ef;
+  border-radius: 13px;
+  background: #fff;
+  box-shadow: 0 4px 17px rgba(43, 31, 63, 0.035);
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
 .product-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-2px);
+  box-shadow: 0 11px 24px rgba(54, 39, 77, 0.08);
 }
 
-/* Approved card */
 .product-card.approved {
-  border: 2px solid #28a745;
-  box-shadow: 0 8px 20px rgba(40, 167, 69, 0.2);
+  border-color: #b4d9c2;
+  background: linear-gradient(155deg, #fff, #fcfffd);
 }
 
-/* ===== Card Loader ===== */
 .card-spinner {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  border: 4px solid #eee;
-  border-top: 4px solid #3498db;
+  z-index: 2;
+  top: 12px;
+  right: 12px;
+  width: 26px;
+  height: 26px;
+  border: 3px solid #ece5f4;
+  border-top-color: #7557b2;
   border-radius: 50%;
-
-  width: 35px;
-  height: 35px;
-  animation: spin 1s linear infinite;
-  z-index: 10;
+  animation: spin 800ms linear infinite;
 }
 
-/* ===== Image ===== */
 .product-image {
   width: 100%;
-  height: 180px;
-  object-fit: cover;
+  height: 165px;
+  object-fit: contain;
+  background: #f8f6fa;
+  mix-blend-mode: multiply;
 }
 
-/* ===== Content ===== */
 .card-content {
-  padding: 20px;
   display: flex;
+  flex: 1;
   flex-direction: column;
-  gap: 12px;
+  gap: 9px;
+  padding: 15px;
 }
 
-/* Title */
 .card-content h3 {
-  font-size: 1.1rem;
-  color: #2c3e50;
   margin: 0;
-}
-
-/* Category */
-.category {
-  font-size: 0.85rem;
-  color: #888;
-}
-
-/* Description */
-.description {
-  font-size: 0.9rem;
-  color: #444;
+  color: #37313f;
+  font-size: 14px;
   line-height: 1.4;
 }
 
-/* ===== Buttons ===== */
+.category,
+.ai-model,
+.created-time {
+  margin: 0;
+  color: #7e7786;
+  font-size: 10px;
+}
+
+.description {
+  margin: 0;
+  color: #625c68;
+  font-size: 10px;
+  line-height: 1.65;
+}
+
 .button-group {
-  margin-top: 15px;
   display: flex;
-  gap: 12px;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 7px;
 }
 
 .btn {
   flex: 1;
-  padding: 10px;
-  border-radius: 6px;
-  border: none;
-  font-weight: 600;
+  min-height: 36px;
+  border: 1px solid transparent;
+  border-radius: 7px;
   cursor: pointer;
-  transition: 0.3s;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  transition: background 150ms ease, transform 150ms ease;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
 }
 
 .btn-approve {
-  background: #28a745;
-  color: white;
+  color: #fff;
+  background: #328054;
 }
 
-.btn-approve:hover {
-  background: #218838;
+.btn-approve:hover:not(:disabled) {
+  background: #276c45;
 }
 
 .btn-reject {
-  background: #dc3545;
-  color: white;
+  color: #635b6b;
+  border-color: #e7e2ea;
+  background: #fff;
 }
 
-.btn-reject:hover {
-  background: #c82333;
+.btn-reject:hover:not(:disabled) {
+  color: #51475e;
+  background: #f7f4f9;
 }
 
 .btn:disabled {
-  background: #ccc;
+  color: #708b7a;
+  border-color: #d8eadf;
+  background: #edf7f0;
   cursor: not-allowed;
 }
 
-/* ===== Animation ===== */
-@keyframes spin {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
+@media (max-width: 640px) {
+  .page-container {
+    padding-top: 25px;
+  }
+
+  .header-container {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .header {
+    font-size: 23px;
+  }
 }

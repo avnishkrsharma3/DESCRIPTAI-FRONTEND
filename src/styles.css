@@ -1,21 +1,64 @@
-/* You can add global styles to this file, and also import other style files */
-html, body {
-    height: 100%;
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    background-color: #f8f9fa; /* Light gray background */
+:root {
+  color-scheme: light;
+  --ink: #2c2636;
+  --muted: #77717f;
+  --purple: #8060bd;
+  --purple-dark: #614394;
+  --line: #ebe7ef;
+  --surface: #fff;
+  --page: #f8f7fa;
+  --danger: #a93636;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-    /* Subtle grid pattern */
-    background-image:
-        linear-gradient(
-            to right,
-            rgba(220, 220, 220, 0.5) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            to bottom,
-            rgba(220, 220, 220, 0.5) 1px,
-            transparent 1px
-        );
-    background-size: 30px 30px;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse at 94% 3%, rgba(232, 222, 250, 0.35), transparent 28rem),
+    var(--page);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+a,
+input,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(126, 94, 187, 0.3);
+  outline-offset: 2px;
+}
+
+::selection {
+  color: #332543;
+  background: #e3d8f3;
 }
