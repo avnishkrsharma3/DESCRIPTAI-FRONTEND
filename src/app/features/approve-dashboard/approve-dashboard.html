@@ -3,232 +3,173 @@
     <nav class="breadcrumbs" aria-label="Breadcrumb">
       <span>Workspace</span>
       <span class="breadcrumb-separator" aria-hidden="true">/</span>
-      <span>Product approvals</span>
-      <span class="breadcrumb-separator" aria-hidden="true">/</span>
-      <span class="breadcrumb-current" aria-current="page">Review details</span>
+      <span class="breadcrumb-current" aria-current="page">Product descriptions</span>
     </nav>
 
     <section class="page-heading" aria-labelledby="page-title">
       <div>
-        <p class="eyebrow">APPROVAL DASHBOARD</p>
-        <h1 id="page-title">Product review</h1>
-        <p class="page-subtitle">Review the product details and its AI-enhanced description.</p>
+        <p class="eyebrow">DESCRIPTION DASHBOARD</p>
+        <h1 id="page-title">Product descriptions</h1>
+        <p class="page-subtitle">Track every generated version and review drafts that need approval.</p>
       </div>
-      @if (activeProduct()) {
-      <div class="approval-status">
-        <span class="status-dot" aria-hidden="true"></span>
-        Approved
-      </div>
-      }
     </section>
 
     @if (isLoading()) {
-    <section class="state-card" role="status" aria-live="polite">
-      <span class="loading-indicator" aria-hidden="true"></span>
-      Loading approved products…
-    </section>
+      <section class="state-card" role="status" aria-live="polite">
+        <span class="loading-indicator" aria-hidden="true"></span>
+        Loading product descriptions…
+      </section>
     } @else if (loadError(); as errorMessage) {
-    <section class="state-card error-state" role="alert">
-      <div>
-        <h2>Couldn’t load approvals</h2>
-        <p>{{ errorMessage }}</p>
-      </div>
-      <button class="retry-button" type="button" (click)="loadProducts()">Try again</button>
-    </section>
-    } @else {
-    <section class="filters-panel" aria-label="Filter approved products">
-      <label class="filter-field">
-        <span>Approved by</span>
-        <input
-          #approverInput
-          type="search"
-          autocomplete="off"
-          placeholder="Search approver"
-          [value]="approvedByFilter()"
-          (input)="setApprovedByFilter(approverInput.value)"
-        />
-      </label>
-      <label class="filter-field date-field">
-        <span>Approval date</span>
-        <input
-          #dateInput
-          type="date"
-          [value]="approvedDateFilter()"
-          (input)="setApprovedDateFilter(dateInput.value)"
-        />
-      </label>
-      <button
-        class="clear-filters-button"
-        type="button"
-        [disabled]="!approvedByFilter() && !approvedDateFilter()"
-        (click)="clearFilters()"
-      >
-        Clear filters
-      </button>
-      <span class="result-count" aria-live="polite">
-        {{ filteredProducts().length }} {{ filteredProducts().length === 1 ? 'product' : 'products' }}
-      </span>
-    </section>
-
-    @if (activeProduct(); as product) {
-    <nav class="product-navigation" aria-label="Approved product navigation">
-      <span class="navigation-count">
-        Product <strong>{{ currentIndex() + 1 }}</strong> of <strong>{{ filteredProducts().length }}</strong>
-      </span>
-      <div class="navigation-buttons">
-        <button
-          class="navigation-button"
-          type="button"
-          [disabled]="currentIndex() === 0"
-          (click)="showPrevious()"
-        >
-          <span aria-hidden="true">←</span>
-          Previous
-        </button>
-        <button
-          class="navigation-button next-button"
-          type="button"
-          [disabled]="currentIndex() >= filteredProducts().length - 1"
-          (click)="showNext()"
-        >
-          Next
-          <span aria-hidden="true">→</span>
-        </button>
-      </div>
-    </nav>
-
-    <section class="product-card" aria-labelledby="product-name">
-      <div class="product-image-panel">
-        <span class="image-label">PRODUCT IMAGE</span>
-        <img
-          class="product-image"
-          [ngSrc]="product.imageURL"
-          [alt]="product.productName"
-          width="640"
-          height="640"
-          priority
-          sizes="(max-width: 720px) 90vw, 40vw"
-        />
-        <span class="image-category">{{ product.category }}</span>
-      </div>
-
-      <div class="product-summary">
-        <div class="summary-topline">
-          <span class="category-label">{{ product.category }}</span>
-          <span class="summary-reference">DESCRIPTION REVIEW</span>
-        </div>
-        <h2 id="product-name">{{ product.productName }}</h2>
-        <p class="summary-copy">
-          Compare the source copy with the AI-generated version and review the approval record.
-        </p>
-
-        <div class="summary-divider"></div>
-
-        <div class="description-heading">
-          <span class="section-kicker">AI-ENHANCED COPY</span>
-          <span class="model-chip">
-            <span class="sparkle" aria-hidden="true">✦</span>
-            {{ product.aiModel }}
-          </span>
-        </div>
-        <p class="generated-preview">{{ product.aiGeneratedDescription }}</p>
-
-        <div class="summary-footer">
-          <span class="footer-check" aria-hidden="true">✓</span>
-          Description approved by {{ product.productApprovedBy }}
-        </div>
-      </div>
-    </section>
-
-    <section class="description-section" aria-labelledby="description-title">
-      <div class="section-heading">
+      <section class="state-card error-state" role="alert">
         <div>
-          <p class="eyebrow">DESCRIPTION</p>
-          <h2 id="description-title">Before &amp; after</h2>
+          <h2>Couldn’t load descriptions</h2>
+          <p>{{ errorMessage }}</p>
         </div>
-        <span class="comparison-note">Original copy compared with AI-generated copy</span>
-      </div>
-
-      <div class="description-grid">
-        <article class="description-card original-card">
-          <div class="card-heading">
-            <span class="card-icon original-icon" aria-hidden="true">O</span>
-            <div>
-              <h3>Original description</h3>
-              <p>Source product copy</p>
-            </div>
-          </div>
-          <p class="description-text">{{ product.originalDescription }}</p>
-        </article>
-
-        <article class="description-card generated-card">
-          <div class="card-heading">
-            <span class="card-icon generated-icon" aria-hidden="true">✦</span>
-            <div>
-              <h3>AI-generated description</h3>
-              <p>Enhanced product copy</p>
-            </div>
-            <span class="approved-tag">
-              <span aria-hidden="true">✓</span>
-              Approved
-            </span>
-          </div>
-          <p class="description-text">{{ product.aiGeneratedDescription }}</p>
-          <div class="generated-by">Generated with <code>{{ product.aiModel }}</code></div>
-        </article>
-      </div>
-    </section>
-
-    <section class="activity-section" aria-labelledby="activity-title">
-      <div class="section-heading activity-heading">
-        <div>
-          <p class="eyebrow">REVIEW HISTORY</p>
-          <h2 id="activity-title">Approval details</h2>
-        </div>
-      </div>
-      <div class="activity-card">
-        <div class="activity-item">
-          <span class="activity-icon created-icon" aria-hidden="true">+</span>
-          <div class="activity-copy">
-            <span class="activity-label">Description created</span>
-            <time [attr.datetime]="product.createdTime">
-              {{ product.createdTime | date: 'MMM d, y · h:mm:ss a' }}
-            </time>
-          </div>
-        </div>
-        <span class="activity-connector" aria-hidden="true"></span>
-        <div class="activity-item">
-          <span class="activity-icon approved-icon" aria-hidden="true">✓</span>
-          <div class="activity-copy">
-            <span class="activity-label">Approved by {{ product.productApprovedBy }}</span>
-            <time [attr.datetime]="product.approvedTime">
-              {{ product.approvedTime | date: 'MMM d, y · h:mm:ss a' }}
-            </time>
-          </div>
-          <span class="approved-tag activity-tag">Approved</span>
-        </div>
-      </div>
-    </section>
-
-    <footer class="page-footer">Product description review <span>•</span> {{ product.productName }}</footer>
+        <button class="retry-button" type="button" (click)="loadDescriptions()">Try again</button>
+      </section>
     } @else {
-    <section class="state-card empty-state" role="status">
-      <span class="empty-state-icon" aria-hidden="true">⌕</span>
-      <div>
-        <h2>No matching products</h2>
-        <p>
-          @if (approvedProducts().length === 0) {
-          There are no approved products to review yet.
-          } @else {
-          Try changing or clearing the approver and approval-date filters.
-          }
-        </p>
-      </div>
-      @if (approvedByFilter() || approvedDateFilter()) {
-      <button class="retry-button" type="button" (click)="clearFilters()">Clear filters</button>
+      <section class="filters-panel" aria-label="Filter product descriptions">
+        <label class="filter-field">
+          <span>Reviewed by</span>
+          <input
+            #reviewerInput
+            type="search"
+            autocomplete="off"
+            placeholder="Search reviewer"
+            [value]="approvedByFilter()"
+            (input)="setApprovedByFilter(reviewerInput.value)"
+          />
+        </label>
+        <label class="filter-field date-field">
+          <span>Review date</span>
+          <input
+            #dateInput
+            type="date"
+            [value]="reviewedDateFilter()"
+            (input)="setReviewedDateFilter(dateInput.value)"
+          />
+        </label>
+        <label class="filter-field">
+          <span>Status</span>
+          <select #statusSelect [value]="statusFilter()" (change)="setStatusFilter(statusSelect.value)">
+            @for (status of statuses; track status) {
+              <option [value]="status">{{ status === 'ALL' ? 'All statuses' : status }}</option>
+            }
+          </select>
+        </label>
+        <button
+          class="clear-filters-button"
+          type="button"
+          [disabled]="!approvedByFilter() && !reviewedDateFilter() && statusFilter() === 'ALL' && productIdsFilter().length === 0"
+          (click)="clearFilters()"
+        >
+          Clear filters
+        </button>
+        <span class="result-count" aria-live="polite">
+          {{ filteredDescriptions().length }}
+          {{ filteredDescriptions().length === 1 ? 'version' : 'versions' }}
+        </span>
+      </section>
+
+      @if (actionError(); as errorMessage) {
+        <p class="action-error" role="alert">{{ errorMessage }}</p>
       }
-    </section>
-    }
+
+      @if (filteredDescriptions().length > 0) {
+        <section class="description-list" aria-label="Product description versions">
+          @for (description of filteredDescriptions(); track description.id) {
+            <article class="description-record">
+              <div class="record-image-panel">
+                <img
+                  class="product-image"
+                  [ngSrc]="description.imageURL"
+                  [alt]="description.productName"
+                  width="240"
+                  height="240"
+                  sizes="(max-width: 720px) 80vw, 25vw"
+                />
+                <span class="image-category">{{ description.category }}</span>
+              </div>
+
+              <div class="record-content">
+                <div class="record-heading">
+                  <div>
+                    <span class="category-label">{{ description.category }}</span>
+                    <h2>{{ description.productName }}</h2>
+                  </div>
+                  <span
+                    class="status-badge"
+                    [class.status-draft]="description.status === 'DRAFT'"
+                    [class.status-approved]="description.status === 'APPROVED'"
+                    [class.status-superseded]="description.status === 'SUPERSEDED'"
+                    [class.status-rejected]="description.status === 'REJECTED'"
+                  >
+                    {{ description.status }}
+                  </span>
+                </div>
+
+                <p class="record-version">Version {{ description.versionNumber }}</p>
+                <p class="record-description">{{ description.aiGeneratedDescription }}</p>
+
+                <dl class="record-metadata">
+                  <div><dt>AI model</dt><dd>{{ description.aiModel }}</dd></div>
+                  <div><dt>Created by</dt><dd>{{ description.createdBy }}</dd></div>
+                  <div><dt>Created</dt><dd>{{ description.createdAt | date: 'medium' }}</dd></div>
+                  <div>
+                    <dt>Approved by</dt>
+                    <dd>{{ description.status === 'APPROVED' ? (description.reviewedBy || 'Unknown') : '—' }}</dd>
+                  </div>
+                  <div><dt>Reviewed by</dt><dd>{{ description.reviewedBy || 'Not reviewed' }}</dd></div>
+                  <div>
+                    <dt>Reviewed</dt>
+                    <dd>{{ description.reviewedAt ? (description.reviewedAt | date: 'medium') : 'Not reviewed' }}</dd>
+                  </div>
+                </dl>
+
+                <div class="record-footer">
+                  <span class="record-id">Product #{{ description.productId }}</span>
+                  @if (description.status === 'DRAFT') {
+                    <div class="record-actions">
+                      <button
+                        class="navigation-button"
+                        type="button"
+                        [disabled]="isBusy(description.id)"
+                        (click)="regenerate(description)"
+                      >
+                        Regenerate
+                      </button>
+                      <button
+                        class="navigation-button"
+                        type="button"
+                        [disabled]="isBusy(description.id)"
+                        (click)="delete(description)"
+                      >
+                        Delete
+                      </button>
+                      <button
+                        class="retry-button"
+                        type="button"
+                        [disabled]="isBusy(description.id)"
+                        (click)="approve(description)"
+                      >
+                        Approve
+                      </button>
+                    </div>
+                  }
+                </div>
+              </div>
+            </article>
+          }
+        </section>
+      } @else {
+        <section class="state-card empty-state" role="status">
+          <span class="empty-state-icon" aria-hidden="true">⌕</span>
+          <div>
+            <h2>No matching descriptions</h2>
+            <p>There are no product description versions matching the current filters.</p>
+          </div>
+        </section>
+      }
     }
   </div>
 </main>

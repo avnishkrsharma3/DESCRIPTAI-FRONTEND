@@ -1,10 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { catchError, map, tap, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
-
 
 interface User {
     username: string;
@@ -14,7 +13,7 @@ interface User {
 interface AuthData {
     username: string;
     token: string;
-    expiresAt: number; // ms since epoch
+    expiresAt: number;
 }
 
 interface LoginRequest {
@@ -38,7 +37,7 @@ interface RegisterResponse {
 interface JwtPayload {
     sub?: string;
     iat?: number;
-    exp: number; // seconds since epoch
+    exp: number;
     [key: string]: unknown;
 }
 
@@ -48,8 +47,8 @@ const AUTH_STORAGE_KEY = 'auth_data';
     providedIn: 'root'
 })
 export class AuthService {
-
-    private apiUrl = environment.apiUrl;
+    private readonly http = inject(HttpClient, { optional: true });
+    private readonly apiUrl = environment.apiUrl;
 
     private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
     public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
@@ -57,7 +56,7 @@ export class AuthService {
     private currentUserSubject = new BehaviorSubject<User | null>(null);
     public currentUser$ = this.currentUserSubject.asObservable();
 
-    constructor(private http: HttpClient) {
+    constructor() {
         const authDataString = localStorage.getItem(AUTH_STORAGE_KEY) || sessionStorage.getItem(AUTH_STORAGE_KEY);
 
         if (authDataString) {
@@ -68,7 +67,7 @@ export class AuthService {
                     this.isAuthenticatedSubject.next(true);
                     this.currentUserSubject.next({
                         username: authData.username,
-                        token: authData.token
+                        token: authData.token,
                     });
                 } else {
                     this.logout();
@@ -79,32 +78,29 @@ export class AuthService {
         }
     }
 
-    /**
-     * Calls the backend login endpoint. On success, persists the token
-     * (localStorage if rememberMe, sessionStorage otherwise) and updates
-     * the reactive auth state. The token's expiry is read from its own
-     * JWT `exp` claim rather than being supplied by the server separately.
-     */
     login(username: string, password: string, rememberMe: boolean = false): Observable<User> {
         const body: LoginRequest = { username, password };
 
-        return this.http.post<LoginResponse>((`${this.apiUrl}/v1/auth/login`), body).pipe(
-            map(response => this.persistSession(response.token, username, rememberMe)),
-            catchError((error: HttpErrorResponse) => this.handleAuthError(error))
+        if (!this.http) {
+            return throwError(() => new Error('HttpClient is not available.'));
+        }
+
+        return this.http.post<LoginResponse>(`${this.apiUrl}/v1/auth/login`, body).pipe(
+            map((response) => this.persistSession(response.token, username, rememberMe)),
+            catchError((error: HttpErrorResponse) => this.handleAuthError(error)),
         );
     }
 
-    /**
-     * Calls the backend register endpoint. Returns just a confirmation
-     * message (no token), so registration does NOT log the user in.
-     * Have the calling component redirect to the login page on success.
-     */
     register(username: string, password: string): Observable<string> {
         const body: RegisterRequest = { username, password };
 
-        return this.http.post<RegisterResponse>((`${this.apiUrl}/v1/auth/register`), body).pipe(
-            map(response => response.message),
-            catchError((error: HttpErrorResponse) => this.handleAuthError(error))
+        if (!this.http) {
+            return throwError(() => new Error('HttpClient is not available.'));
+        }
+
+        return this.http.post<RegisterResponse>(`${this.apiUrl}/v1/auth/register`, body).pipe(
+            map((response) => response.message),
+            catchError((error: HttpErrorResponse) => this.handleAuthError(error)),
         );
     }
 
@@ -127,7 +123,6 @@ export class AuthService {
             const authData: AuthData = JSON.parse(authDataString);
 
             if (Date.now() > authData.expiresAt) {
-                console.log('Token expired');
                 this.logout();
                 return false;
             }
@@ -143,7 +138,6 @@ export class AuthService {
         return this.currentUserSubject.value;
     }
 
-    /** Returns the raw token for use by the HTTP interceptor. */
     getToken(): string | null {
         const authDataString = localStorage.getItem(AUTH_STORAGE_KEY) || sessionStorage.getItem(AUTH_STORAGE_KEY);
         if (!authDataString) {
@@ -174,7 +168,6 @@ export class AuthService {
         return user;
     }
 
-    /** Decodes the JWT payload to read its `exp` claim (seconds -> ms). */
     private getExpiryFromToken(token: string): number {
         try {
             const payloadBase64 = token.split('.')[1];

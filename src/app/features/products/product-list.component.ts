@@ -131,8 +131,8 @@ export class ProductListComponent implements OnInit {
       return;
     }
     this.router.navigate(['/description-generate'], {
-      state: {productIds:  ids}
-    })
+      queryParams: { productIds: ids.join(',') },
+    });
   }
 
   clearSelection(): void {

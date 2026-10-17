@@ -1,38 +1,51 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApprovedProduct, Product, ProductsResponse } from '../models/product.model';
+import {
+  GeneratedDescription,
+  ProductDescription,
+  ProductsResponse,
+} from '../models/product.model';
 import { environment } from '../../../environments/environment';
 
+export interface ApprovalRequest {
+  listOfIds: string[];
+}
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProductService {
-  private apiUrl = environment.apiUrl;
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
-
-  // Get all products
-  getAllProducts(limit: number = 100): Observable<ProductsResponse> {
+  getAllProducts(): Observable<ProductsResponse> {
     return this.http.get<ProductsResponse>(`${this.apiUrl}/products`);
   }
 
-  getApprovedProducts(): Observable<ApprovedProduct[]> {
-    return this.http.get<ApprovedProduct[]>(`${this.apiUrl}/products/aprroved/products`);
+  getDescriptionStatuses(): Observable<ProductDescription[]> {
+    return this.http.get<ProductDescription[]>(`${this.apiUrl}/product/description/status`);
   }
 
-  // Search for products
   searchProducts(query: string): Observable<ProductsResponse> {
-    return this.http.get<ProductsResponse>(`${this.apiUrl}/products/search?q=${query}`);
+    return this.http.get<ProductsResponse>(`${this.apiUrl}/products/search`, {
+      params: { q: query },
+    });
   }
 
-  generateDescription(productIds: string[], prompts: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/AI/generate`, { productIds, prompts });
+  generateDescription(productIds: number[], prompts: string): Observable<GeneratedDescription[]> {
+    return this.http.post<GeneratedDescription[]>(`${this.apiUrl}/AI/generate`, {
+      productIds,
+      prompts,
+    });
   }
 
-  saveProduct(product: any): Observable<any> {
-    console.log(product);
-    return this.http.post<any>(`${this.apiUrl}/products/save`, product);
+  approveDescriptions(listOfIds: string[]): Observable<void> {
+    const body: ApprovalRequest = { listOfIds };
+    return this.http.post<void>(`${this.apiUrl}/product/description/approve`, body);
   }
-  
+
+  deleteDescription(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/product/description/delete/${encodeURIComponent(id)}`);
+  }
 }

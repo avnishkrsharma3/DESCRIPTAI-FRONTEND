@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { debounceTime } from 'rxjs';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-description-generate',
@@ -11,26 +11,35 @@ import { Router, RouterLink } from '@angular/router';
   templateUrl: './description-generate.html',
   styleUrl: './description-generate.css',
 })
-export class DescriptionGenerate {
+export class DescriptionGenerate implements OnInit {
+  private readonly fb = inject(FormBuilder);
+  private readonly route = inject(ActivatedRoute, { optional: true });
+  private readonly router = inject(Router, { optional: true });
 
   products: number[] = [];
   tones = ['Professional', 'Casual', 'Persuasive'];
   focusOptions = ['Seo', 'Conversion', 'Infomative'];
   lengths = ['Short', 'Medium', 'Long'];
-  size: number = 0;
+  size = 0;
   form!: FormGroup;
-  preview!: string;
-  isTyping: boolean = false;
-  prompts!: string;
-  
+  preview = '';
+  isTyping = false;
+  prompts = '';
+
   ngOnInit(): void {
     this.form = this.fb.group({
       tone: ['Professional', Validators.required],
       length: ['Short', Validators.required],
-      focus: ['Seo', Validators.required]
+      focus: ['Seo', Validators.required],
     });
-    const state = history.state as { productIds?: number[] };
-    this.products = Array.isArray(state?.productIds) ? state.productIds : [];
+
+    const queryIds = this.route?.snapshot.queryParamMap.get('productIds');
+    const state = history.state as { productIds?: unknown };
+    const rawIds = queryIds ?? state?.productIds;
+    this.products = (Array.isArray(rawIds) ? rawIds : String(rawIds ?? '').split(','))
+      .map((id) => Number(id))
+      .filter((id) => Number.isSafeInteger(id) && id > 0);
+
     if (this.products.length === 0) {
       return;
     }
@@ -41,39 +50,33 @@ export class DescriptionGenerate {
     });
   }
 
-  constructor(private fb: FormBuilder, private router: Router) {
-
-  }
-
-  onGenerate() {
+  onGenerate(): void {
     const { tone, length, focus } = this.form.value;
-    this.prompts = tone+","+length+","+focus;
+    this.prompts = `${tone},${length},${focus}`;
+
+    if (!this.router) {
+      return;
+    }
+
     this.router.navigate(['/description-generation'], {
-      state: {prompts: this.prompts, productIds: this.products}
-    })
+      queryParams: {
+        prompts: this.prompts,
+        productIds: this.products.join(','),
+      },
+    });
   }
 
-
-  // product id 2 description will get generated based on tone Professional , length medium and focus seo.
-  generatePreview() {
-    if (!this.products.length) return;
+  generatePreview(): void {
+    if (!this.products.length) {
+      return;
+    }
 
     const { tone, length, focus } = this.form.value;
-
-    const fullText =
-      "Product id " +
-      this.products[0] +
-      " description will get generated based on tone " +
-      tone +
-      ", length " +
-      length +
-      " and focus " +
-      focus + ".";
-
+    const fullText = `Product id ${this.products[0]} description will get generated based on tone ${tone}, length ${length} and focus ${focus}.`;
     this.simulateTyping(fullText);
   }
 
-  simulateTyping(text: string) {
+  simulateTyping(text: string): void {
     this.preview = '';
     this.isTyping = true;
 
@@ -89,5 +92,4 @@ export class DescriptionGenerate {
       }
     }, 10);
   }
-
 }

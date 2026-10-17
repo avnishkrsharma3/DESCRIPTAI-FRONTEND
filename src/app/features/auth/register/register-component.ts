@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterLink, RouterModule } from '@angular/router';
@@ -12,27 +12,24 @@ import { AuthService } from '../../../core/services/auth.service';
   styleUrls: ['./register-component.css']
 })
 export class RegisterComponent implements OnInit {
-  registerForm!: FormGroup;
-  errorMessage: string = '';
-  successMessage: string = '';
-  submitted: boolean = false;
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService, { optional: true });
+  private readonly router = inject(Router, { optional: true });
 
-  constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  registerForm!: FormGroup;
+  errorMessage = '';
+  successMessage = '';
+  submitted = false;
 
   ngOnInit(): void {
     this.registerForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required]]
+      confirmPassword: ['', [Validators.required]],
     }, { validators: this.passwordMatchValidator });
   }
 
-  // Getter for easy access to form fields
   get f() {
     return this.registerForm.controls;
   }
@@ -53,20 +50,27 @@ export class RegisterComponent implements OnInit {
     this.errorMessage = '';
     this.successMessage = '';
 
-    // Stop if form is invalid
     if (this.registerForm.invalid) {
       return;
     }
 
-    const { name, email, password } = this.registerForm.value;
+    const { name, password } = this.registerForm.value;
 
-    // Here you would typically call a registration service
-    // For now, we'll simulate a success scenario
-    this.successMessage = 'Registration successful!';
-    
-    // Optionally, you could navigate to the login page after a delay
-    // setTimeout(() => {
-    //   this.router.navigate(['/login']);
-    // }, 2000);
+    if (!this.authService) {
+      this.errorMessage = 'Registration service is unavailable. Please try again later.';
+      return;
+    }
+
+    this.authService.register(name, password).subscribe({
+      next: (message) => {
+        this.successMessage = message || 'Registration successful!';
+        this.registerForm.reset();
+        setTimeout(() => this.router?.navigate(['/login']), 300);
+      },
+      error: (error) => {
+        console.error('Registration failed:', error);
+        this.errorMessage = error?.error?.message || 'Registration failed. Please try again.';
+      },
+    });
   }
 }
